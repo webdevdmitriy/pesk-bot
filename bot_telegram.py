@@ -1,17 +1,21 @@
-from aiogram import Bot, types
-from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
+from create_bot import dp, bot
+from handlers import client
+from menu import set_main_menu
 
-TOKEN = '5828168135:AAHLMf9rjdGf2d8nqmLlzfKBAO7HSgc8JzA'
+from aiogram import Bot, Dispatcher
 
-bot = Bot(token=TOKEN)
-dp = Dispatcher(bot)
-
-
-# улавливает любые сооющения, которые приходят боту
-@dp.message_handler()
-async def echo_send(message: types.message):
-    await message.answer(message.text)
+# dp: Dispatcher = Dispatcher()
 
 
-executor.start_polling(dp,skip_updates=True)
+# dp.startup.register(set_main_menu)
+
+
+async def on_startup(_):
+    await set_main_menu(bot)
+    print("Бот вышел в онлайн")
+
+
+client.register_handlers_client(dp)
+
+executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
