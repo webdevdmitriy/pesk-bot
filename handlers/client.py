@@ -1,10 +1,21 @@
 from aiogram import types, Dispatcher
 from create_bot import dp, bot
-from keyboards import kb_client, kb_admin, kb_other
+from keyboards import kb_client, kb_admin, kb_other, kb_breed
 import requests
 from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
 
+
+
+
+
+# ===========================================================================================
+# ===========================================================================================
+# ===========================================================================================
+# ===========================================================================================
+# ===========================================================================================
 
 async def command_start(message: types.message):
     await message.answer("Привет!", reply_markup=kb_client)
@@ -34,15 +45,10 @@ async def send_photo(message: types.message):
     json = response.json()
     await bot.send_photo(
         message.chat.id,
-        # photo="http://chudo-prirody.com/uploads/posts/2021-08/1628647490_127-p-udivlennii-kot-foto-133.jpg",
         photo=json[0]["url"],
     )
 
 
-# улавливает любые сооющения, которые приходят боту
-# @dp.message_handler()
-# async def echo_send(message: types.message):
-#     await message.answer(message.text)
 
 
 def register_handlers_client(dp: Dispatcher):
@@ -53,4 +59,3 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(other_command, commands=["other"])
     dp.register_message_handler(server_command, commands=["Сервер"])
 
-    # dp.register_message_handler(echo_send)
