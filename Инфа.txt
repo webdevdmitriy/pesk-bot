@@ -1,3 +1,3 @@
-создание venv python -m venv telebot
+создание venv python -m venv venv
 запустить  python bot_telegram.py
 хандлеры улавливает любые сооющения, которые приходят боту

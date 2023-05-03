@@ -1,31 +1,37 @@
 from aiogram.utils import executor
 from create_bot import dp, bot
 from handlers import client
-from handlers import admin
+from handlers import cats
 from menu import set_main_menu
-import requests
+import sqlite3 as sq
 
-from aiogram import Bot, Dispatcher
+async def db_start():
+    global db, cur
 
-# dp: Dispatcher = Dispatcher()
+    db = sq.connect('new.db')
+    cur = db.cursor()
+
+    cur.execute("CREATE TABLE IF NOT EXISTS profile(user_id TEXT PRIMARY KEY, name TEXT, photo TEXT)")
+    db.commit()
 
 
-# dp.startup.register(set_main_menu)
-
-response = requests.get("https://api.thecatapi.com/v1/breeds")
-json = response.json()
-# print('breeds', json)
-
-for breed in json:
-    print(breed['name'])
-
+async def create_profile(user_id):
+    user = cur.execute("SELECT 1 FROM profile WHERE user_id == '{key}'".format(key=user_id)).fetck
+    if not user:
+        cur.execute('INSERT INTO profile values(?,?,?)', (user_id,))
+        db.commit()
+    # INSERT INTO profile VALUES()
 
 async def on_startup(_):
+    await db_start()
     await set_main_menu(bot)
     print("Бот вышел в онлайн")
 
+# async
 
 client.register_handlers_client(dp)
-admin.register_handlers_client(dp)
+cats.register_handlers_client(dp)
+
 
 executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
+
